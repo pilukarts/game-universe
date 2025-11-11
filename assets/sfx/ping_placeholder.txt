@@ -1,0 +1,8 @@
+PLACEHOLDER AUDIO - ping_placeholder.txt
+This is a placeholder for the ping sound effect audio file.
+Required formats: mp3 and ogg
+Audio type: Short ping/notification sound
+Duration: ~0.5-1 second
+Replace this placeholder with:
+- assets/sfx/ping.mp3
+- assets/sfx/ping.ogg

@@ -5,6 +5,31 @@ export default class PreloadScene extends Phaser.Scene {
     super({ key: 'PreloadScene' })
   }
 
+  preload() {
+    // Hologram overlay assets (WebP with PNG fallback)
+    if (this.sys.game.device.browser.safari) {
+      // Safari fallback to PNG
+      this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.png')
+    } else {
+      // Modern browsers use WebP
+      this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.webp')
+    }
+
+    // Scanline effect (generated procedurally as fallback)
+    // In production, load from assets/ui/scanline.png or scanline.webp
+
+    // Particle star asset (WebP with PNG fallback)
+    if (this.sys.game.device.browser.safari) {
+      this.load.image('particle_star', 'assets/particles/particle_star_512.png')
+    } else {
+      this.load.image('particle_star', 'assets/particles/particle_star_512.webp')
+    }
+
+    // Ping audio (placeholder - replace with real mp3/ogg)
+    // this.load.audio('ping', 'assets/sfx/ping.mp3')
+    // For now, we'll handle missing audio gracefully in WinDisplay
+  }
+
   create() {
     // Generate placeholder textures for symbols (replace with your assets later)
     const colors = [0x60a86b, 0xd94b3b, 0x7b5fd1, 0x2fa6b4, 0xf0c75e, 0x9b9b9b]
@@ -29,6 +54,15 @@ export default class PreloadScene extends Phaser.Scene {
     g2.strokeRoundedRect(3, 3, 122, 122, 14)
     g2.generateTexture('gold_frame', 128, 128)
     g2.destroy()
+
+    // Generate scanline texture procedurally
+    const scanlineG = this.make.graphics({ x: 0, y: 0, add: false })
+    for (let y = 0; y < 32; y += 2) {
+      scanlineG.fillStyle(0xffffff, y % 4 === 0 ? 0.1 : 0.05)
+      scanlineG.fillRect(0, y, 64, 1)
+    }
+    scanlineG.generateTexture('scanline', 64, 32)
+    scanlineG.destroy()
 
     this.scene.start('GameScene')
   }
