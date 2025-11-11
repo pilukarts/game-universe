@@ -26,18 +26,9 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image('tile_X_2048', 'assets/icons/tile_X_2048.png')
     this.load.image('tile_X_1024', 'assets/icons/tile_X_1024.png')
 
-    // Load audio (placeholder text files for now - replace with mp3/ogg)
-    // Note: These will fail to load as audio but won't crash the game
-    // Replace with real audio files before production
-    this.load.on('loaderror', (file: Phaser.Loader.File) => {
-      console.warn(`Failed to load: ${file.key} (${file.src}) - this is expected for placeholder text files`)
-    })
-    
-    // Attempt to load audio - will fail gracefully if files are text placeholders
-    if (this.load.audio) {
-      this.load.audio('ping', ['assets/sfx/ping_placeholder.txt'])
-      this.load.audio('ambient', ['assets/sfx/ambient_placeholder.txt'])
-    }
+    // Note: Audio placeholders are text files. Actual audio loading should be added
+    // when real mp3/ogg files are available. For now, the WinDisplay will gracefully
+    // handle missing audio assets.
   }
 
   create() {

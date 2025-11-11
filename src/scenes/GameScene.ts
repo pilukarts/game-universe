@@ -22,6 +22,9 @@ export default class GameScene extends Phaser.Scene {
   private spinButton?: Phaser.GameObjects.Container
   private resolving = false
   private winDisplay?: WinDisplay
+  // Configurable currency and locale settings
+  private currency = 'GBP'
+  private locale = 'en-GB'
 
   constructor() {
     super({ key: 'GameScene' })
@@ -162,7 +165,11 @@ export default class GameScene extends Phaser.Scene {
     
     // Show win display if there was a win
     if (totalWin > 0) {
-      this.winDisplay?.showWin(totalWin, { mode: 'untilNextSpin', currency: 'GBP', locale: 'en-GB' })
+      this.winDisplay?.showWin(totalWin, { 
+        mode: 'untilNextSpin', 
+        currency: this.currency, 
+        locale: this.locale 
+      })
     }
     
     this.multiplier = 1

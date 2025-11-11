@@ -19,9 +19,30 @@ export default class WinDisplay {
   private particleEmitter?: Phaser.GameObjects.Particles.ParticleEmitter
   private scanlineEffect?: Phaser.GameObjects.TileSprite
   private isVisible = false
+  private scanlineTextureKey = 'scanline_pattern'
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene
+    // Pre-generate scanline texture once for reuse
+    this.generateScanlineTexture()
+  }
+
+  /**
+   * Generate the scanline texture once for efficiency
+   */
+  private generateScanlineTexture() {
+    // Only generate if it doesn't already exist
+    if (this.scene.textures.exists(this.scanlineTextureKey)) {
+      return
+    }
+    
+    const graphics = this.scene.make.graphics({ x: 0, y: 0, add: false })
+    graphics.fillStyle(0x00ffff, 0.1)
+    for (let i = 0; i < 20; i++) {
+      graphics.fillRect(0, i * 10, 400, 2)
+    }
+    graphics.generateTexture(this.scanlineTextureKey, 400, 200)
+    graphics.destroy()
   }
 
   /**
@@ -67,16 +88,8 @@ export default class WinDisplay {
       })
     }
 
-    // Add scanline effect for retro-futuristic look
-    const graphics = this.scene.make.graphics({ x: 0, y: 0, add: false })
-    graphics.fillStyle(0x00ffff, 0.1)
-    for (let i = 0; i < 20; i++) {
-      graphics.fillRect(0, i * 10, 400, 2)
-    }
-    graphics.generateTexture('scanline_pattern', 400, 200)
-    graphics.destroy()
-
-    this.scanlineEffect = this.scene.add.tileSprite(0, 0, 400, 200, 'scanline_pattern')
+    // Add scanline effect for retro-futuristic look (reusing pre-generated texture)
+    this.scanlineEffect = this.scene.add.tileSprite(0, 0, 400, 200, this.scanlineTextureKey)
       .setAlpha(0.3)
       .setBlendMode(Phaser.BlendModes.ADD)
     this.container.add(this.scanlineEffect)
@@ -135,7 +148,8 @@ export default class WinDisplay {
         blendMode: Phaser.BlendModes.ADD
       })
       this.container.add(particles)
-      this.particleEmitter = particles as unknown as Phaser.GameObjects.Particles.ParticleEmitter
+      // Store reference for cleanup - particles is already a ParticleEmitter
+      this.particleEmitter = particles
     }
 
     // Play ping audio if available
