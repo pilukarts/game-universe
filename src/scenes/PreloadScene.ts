@@ -5,6 +5,19 @@ export default class PreloadScene extends Phaser.Scene {
     super({ key: 'PreloadScene' })
   }
 
+  preload() {
+    // Load hologram overlay assets for WinDisplay
+    this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.webp')
+    this.load.image('scanline', 'assets/ui/scanline.svg')
+    
+    // Load particle assets
+    this.load.image('particle_star', 'assets/particles/particle_star_512.webp')
+    
+    // Note: Audio placeholders are currently .txt files
+    // When real audio files are added (mp3/ogg), uncomment this:
+    // this.load.audio('ping', ['assets/sfx/ping.mp3', 'assets/sfx/ping.ogg'])
+  }
+
   create() {
     // Generate placeholder textures for symbols (replace with your assets later)
     const colors = [0x60a86b, 0xd94b3b, 0x7b5fd1, 0x2fa6b4, 0xf0c75e, 0x9b9b9b]

@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { WinDisplay } from '../ui/WinDisplay'
 
 type Tile = {
   id: number
@@ -20,6 +21,7 @@ export default class GameScene extends Phaser.Scene {
   private uiText?: Phaser.GameObjects.Text
   private spinButton?: Phaser.GameObjects.Container
   private resolving = false
+  private winDisplay?: WinDisplay
 
   constructor() {
     super({ key: 'GameScene' })
@@ -49,6 +51,10 @@ export default class GameScene extends Phaser.Scene {
 
     this.createSpinButton(900, 520)
 
+    // Create WinDisplay instance
+    this.winDisplay = new WinDisplay(this)
+    this.winDisplay.create(512, 400)
+
     this.generateBoardNoInitialMatches()
     this.renderBoard()
   }
@@ -71,6 +77,8 @@ export default class GameScene extends Phaser.Scene {
 
   private startSpin() {
     this.resolving = true
+    // Hide win display when starting new spin
+    this.winDisplay?.hide()
     this.balance = Math.max(0, this.balance - this.bet)
     this.uiText?.setText(this.getStatusText())
     this.time.delayedCall(200, () => {
@@ -130,6 +138,7 @@ export default class GameScene extends Phaser.Scene {
   private async resolveCascades() {
     this.multiplier = 1
     let chain = 0
+    let totalWinAmount = 0
     while (true) {
       const matches = this.findAllMatches()
       if (matches.length === 0) break
@@ -141,6 +150,7 @@ export default class GameScene extends Phaser.Scene {
       await this.tweenFadeMatches(matches)
 
       const winAmount = this.calculateWin(matches, chain)
+      totalWinAmount += winAmount * this.multiplier
       this.balance += winAmount * this.multiplier
       this.multiplier += 1
       this.uiText?.setText(this.getStatusText())
@@ -152,6 +162,11 @@ export default class GameScene extends Phaser.Scene {
     }
     this.multiplier = 1
     this.uiText?.setText(this.getStatusText())
+    
+    // Show win display if there was any win
+    if (totalWinAmount > 0) {
+      this.winDisplay?.showWin(totalWinAmount)
+    }
   }
 
   private calculateWin(matches: { r: number; c: number }[], chain: number) {
