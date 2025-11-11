@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g3" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFD23F"/>
+      <stop offset="100%" stop-color="#F2A900"/>
+    </linearGradient>
+  </defs>
+  <rect x="12" y="12" width="488" height="488" rx="28" fill="#3c0f4f" stroke="#4B0F6A" stroke-width="12"/>
+  <g transform="translate(0,52)">
+    <ellipse cx="256" cy="354" rx="200" ry="68" fill="#f2c13a"/>
+    <text x="50%" y="46%" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-weight="700" font-size="220" fill="url(#g3)" stroke="#2a0b2f" stroke-width="6">I</text>
+  </g>
+</svg>
