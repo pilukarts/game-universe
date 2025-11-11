@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import WinDisplay from '../ui/WinDisplay'
 
 type Tile = {
   id: number
@@ -20,6 +21,7 @@ export default class GameScene extends Phaser.Scene {
   private uiText?: Phaser.GameObjects.Text
   private spinButton?: Phaser.GameObjects.Container
   private resolving = false
+  private winDisplay?: WinDisplay
 
   constructor() {
     super({ key: 'GameScene' })
@@ -49,6 +51,9 @@ export default class GameScene extends Phaser.Scene {
 
     this.createSpinButton(900, 520)
 
+    // Initialize WinDisplay component
+    this.winDisplay = new WinDisplay(this)
+
     this.generateBoardNoInitialMatches()
     this.renderBoard()
   }
@@ -71,6 +76,8 @@ export default class GameScene extends Phaser.Scene {
 
   private startSpin() {
     this.resolving = true
+    // Hide any existing win display before starting new spin
+    this.winDisplay?.hide()
     this.balance = Math.max(0, this.balance - this.bet)
     this.uiText?.setText(this.getStatusText())
     this.time.delayedCall(200, () => {
@@ -130,6 +137,7 @@ export default class GameScene extends Phaser.Scene {
   private async resolveCascades() {
     this.multiplier = 1
     let chain = 0
+    let totalWin = 0
     while (true) {
       const matches = this.findAllMatches()
       if (matches.length === 0) break
@@ -141,6 +149,7 @@ export default class GameScene extends Phaser.Scene {
       await this.tweenFadeMatches(matches)
 
       const winAmount = this.calculateWin(matches, chain)
+      totalWin += winAmount * this.multiplier
       this.balance += winAmount * this.multiplier
       this.multiplier += 1
       this.uiText?.setText(this.getStatusText())
@@ -150,6 +159,12 @@ export default class GameScene extends Phaser.Scene {
       this.renderBoard()
       await this.wait(200)
     }
+    
+    // Show win display if there was a win
+    if (totalWin > 0) {
+      this.winDisplay?.showWin(totalWin, { mode: 'untilNextSpin', currency: 'GBP', locale: 'en-GB' })
+    }
+    
     this.multiplier = 1
     this.uiText?.setText(this.getStatusText())
   }

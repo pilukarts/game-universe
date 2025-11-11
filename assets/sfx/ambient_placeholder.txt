@@ -1,0 +1,4 @@
+PLACEHOLDER: Replace this file with ambient.mp3 and ambient.ogg audio files.
+This should be a looping ambient background music track for the game.
+Duration: 60-120 seconds, seamless loop.
+Sample rate: 44.1kHz, Bitrate: 128kbps for mp3, Quality 5 for ogg.

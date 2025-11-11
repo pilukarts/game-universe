@@ -1,0 +1,18 @@
+PLACEHOLDER SCREENSHOT: Replace this file with an actual screenshot showing:
+1. The holographic WinDisplay component in action
+2. Win amount displayed with currency formatting
+3. Particle effects and hologram overlay visible
+4. Game background/board visible behind the effect
+
+Recommended specs:
+- Dimensions: 1920x1080 (Full HD)
+- Format: PNG
+- File size: < 500KB
+- Content: Clear view of the WinDisplay feature in the game
+
+How to capture:
+1. Run the game in dev mode
+2. Load WinDemoScene or trigger a win in GameScene
+3. Take a screenshot when WinDisplay is fully visible
+4. Edit/crop to focus on the feature
+5. Save as win_demo_placeholder.png (replacing this file)

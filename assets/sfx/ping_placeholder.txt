@@ -1,0 +1,4 @@
+PLACEHOLDER: Replace this file with ping.mp3 and ping.ogg audio files.
+This should be a short, bright "ping" sound effect (approximately 0.5 seconds).
+Ideal for win celebration or UI confirmation sounds.
+Sample rate: 44.1kHz, Bitrate: 128kbps for mp3, Quality 5 for ogg.
