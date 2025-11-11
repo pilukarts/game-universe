@@ -81,8 +81,8 @@ export class WinDisplay {
     // Make visible
     this.container.setVisible(true)
 
-    // Play ping sound if available
-    if (this.scene.sound.get('ping')) {
+    // Play ping sound if available (check if audio exists in cache)
+    if (this.scene.cache.audio.exists('ping')) {
       this.scene.sound.play('ping', { volume: 0.5 })
     }
 

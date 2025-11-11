@@ -150,8 +150,9 @@ export default class GameScene extends Phaser.Scene {
       await this.tweenFadeMatches(matches)
 
       const winAmount = this.calculateWin(matches, chain)
-      totalWinAmount += winAmount * this.multiplier
-      this.balance += winAmount * this.multiplier
+      const winWithMultiplier = winAmount * this.multiplier
+      totalWinAmount += winWithMultiplier
+      this.balance += winWithMultiplier
       this.multiplier += 1
       this.uiText?.setText(this.getStatusText())
 
