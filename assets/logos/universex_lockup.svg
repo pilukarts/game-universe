@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 1024">
+  <defs>
+    <linearGradient id="gGold" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFD23F"/>
+      <stop offset="100%" stop-color="#F2A900"/>
+    </linearGradient>
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <!-- Transparent background -->
+  <g filter="url(#softShadow)">
+    <text x="50%" y="36%" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-weight="700"
+          font-size="140" fill="url(#gGold)" stroke="#4B0F6A" stroke-width="8" paint-order="stroke">
+      UNIVERSE
+    </text>
+    <text x="50%" y="78%" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900"
+          font-size="420" fill="url(#gGold)" stroke="#4B0F6A" stroke-width="18" paint-order="stroke">
+      X
+    </text>
+  </g>
+</svg>
