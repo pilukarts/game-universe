@@ -1,3 +1,11 @@
+PLACEHOLDER AUDIO - ambient_placeholder.txt
+This is a placeholder for the ambient background music/loop audio file.
+Required formats: mp3 and ogg
+Audio type: Ambient loop for background atmosphere
+Duration: Variable (loop-friendly)
+Replace this placeholder with:
+- assets/sfx/ambient_loop.mp3
+- assets/sfx/ambient_loop.ogg
 Placeholder for ambient loop. Replace with real ambient loop files:
 - assets/sfx/ambient_loop.mp3
 - assets/sfx/ambient_loop.ogg

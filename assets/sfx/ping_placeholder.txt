@@ -1,3 +1,11 @@
+PLACEHOLDER AUDIO - ping_placeholder.txt
+This is a placeholder for the ping sound effect audio file.
+Required formats: mp3 and ogg
+Audio type: Short ping/notification sound
+Duration: ~0.5-1 second
+Replace this placeholder with:
+- assets/sfx/ping.mp3
+- assets/sfx/ping.ogg
 This is a placeholder for the ping sound effect used by the WinDisplay. Please replace with real audio files:
 - assets/sfx/ping.mp3 (recommended: 48–96 kbps MP3)
 - assets/sfx/ping.ogg (recommended for browser compatibility)

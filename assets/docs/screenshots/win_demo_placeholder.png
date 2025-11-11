@@ -1,0 +1,13 @@
+PLACEHOLDER SCREENSHOT - win_demo_placeholder.png
+This is a placeholder for the screenshot of the WinDisplay feature.
+Required: Actual screenshot showing the hologram WinDisplay in action
+Resolution: 1024x768 or higher
+Format: PNG
+Replace this placeholder with a real screenshot before final review.
+
+To capture a screenshot:
+1. Run the project: npm run dev
+2. Open in browser
+3. Navigate to the WinDemoScene or trigger a win in GameScene
+4. Capture the screen when the holographic WinDisplay is visible
+5. Save as win_demo_placeholder.png

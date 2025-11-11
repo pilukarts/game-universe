@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import WinDisplay from '../ui/WinDisplay'
 import { WinDisplay } from '../ui/WinDisplay'
 
 type Tile = {
@@ -51,6 +52,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.createSpinButton(900, 520)
 
+    // Initialize WinDisplay
+    this.winDisplay = new WinDisplay(this)
+
+    // Add demo scene button
+    this.createDemoButton(900, 50)
     // Create WinDisplay instance
     this.winDisplay = new WinDisplay(this)
     this.winDisplay.create(512, 400)
@@ -75,12 +81,38 @@ export default class GameScene extends Phaser.Scene {
     this.spinButton = container
   }
 
+  private createDemoButton(x: number, y: number) {
+    const demoText = this.add.text(x, y, 'Demo', {
+      fontSize: '16px',
+      color: '#2ca6f8',
+      fontStyle: 'bold'
+    })
+    demoText.setOrigin(0.5)
+    demoText.setInteractive({ cursor: 'pointer' })
+    
+    demoText.on('pointerover', () => {
+      demoText.setColor('#3cb6ff')
+    })
+    
+    demoText.on('pointerout', () => {
+      demoText.setColor('#2ca6f8')
+    })
+    
+    demoText.on('pointerdown', () => {
+      this.scene.start('WinDemoScene')
+    })
+  }
+
   private startSpin() {
     this.resolving = true
     // Hide win display when starting new spin
     this.winDisplay?.hide()
     this.balance = Math.max(0, this.balance - this.bet)
     this.uiText?.setText(this.getStatusText())
+    
+    // Hide WinDisplay before starting new spin
+    this.winDisplay?.hide()
+    
     this.time.delayedCall(200, () => {
       this.resolveCascades().then(() => {
         this.resolving = false
@@ -138,6 +170,8 @@ export default class GameScene extends Phaser.Scene {
   private async resolveCascades() {
     this.multiplier = 1
     let chain = 0
+    let totalWin = 0
+    
     let totalWinAmount = 0
     while (true) {
       const matches = this.findAllMatches()
@@ -150,6 +184,8 @@ export default class GameScene extends Phaser.Scene {
       await this.tweenFadeMatches(matches)
 
       const winAmount = this.calculateWin(matches, chain)
+      totalWin += winAmount * this.multiplier
+      this.balance += winAmount * this.multiplier
       const winWithMultiplier = winAmount * this.multiplier
       totalWinAmount += winWithMultiplier
       this.balance += winWithMultiplier
@@ -161,6 +197,16 @@ export default class GameScene extends Phaser.Scene {
       this.renderBoard()
       await this.wait(200)
     }
+    
+    // Show WinDisplay if there was a win
+    if (totalWin > 0) {
+      this.winDisplay?.showWin(totalWin, {
+        mode: 'untilNextSpin',
+        currency: 'GBP',
+        locale: 'en-GB'
+      })
+    }
+    
     this.multiplier = 1
     this.uiText?.setText(this.getStatusText())
     
