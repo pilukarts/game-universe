@@ -50,9 +50,14 @@ export default class WinDisplay {
    * @param winAmount - The amount won
    * @param options - Display options (mode, duration, currency, locale)
    */
-  showWin(winAmount: number, options: WinDisplayOptions = {}) {
+  async showWin(winAmount: number, options: WinDisplayOptions = {}) {
+    // If already visible, wait for hide animation to complete before showing again
     if (this.isVisible) {
-      this.hide()
+      await new Promise<void>((resolve) => {
+        this.hide()
+        // Wait for hide animation to complete (500ms)
+        this.scene.time.delayedCall(500, () => resolve())
+      })
     }
 
     const {
@@ -152,9 +157,14 @@ export default class WinDisplay {
       this.particleEmitter = particles
     }
 
-    // Play ping audio if available
-    if (this.scene.sound.get('ping') || this.scene.cache.audio.exists('ping')) {
-      this.scene.sound.play('ping', { volume: 0.5 })
+    // Play ping audio if available (with error handling)
+    try {
+      if (this.scene.cache.audio.exists('ping')) {
+        this.scene.sound.play('ping', { volume: 0.5 })
+      }
+    } catch (error) {
+      // Silently fail if audio cannot be played
+      console.debug('Could not play ping audio:', error)
     }
 
     // Fade in container
@@ -215,9 +225,25 @@ export default class WinDisplay {
    * Destroy the component and clean up resources
    */
   destroy() {
+    // Stop all tweens targeting this component's objects
+    if (this.container) {
+      this.scene.tweens.killTweensOf(this.container)
+    }
+    if (this.hologramOverlay) {
+      this.scene.tweens.killTweensOf(this.hologramOverlay)
+    }
+    if (this.winText) {
+      this.scene.tweens.killTweensOf(this.winText)
+    }
+    if (this.scanlineEffect) {
+      this.scene.tweens.killTweensOf(this.scanlineEffect)
+    }
+    
+    // Destroy container and all children
     if (this.container) {
       this.container.destroy(true)
     }
+    
     this.isVisible = false
     this.container = undefined
     this.hologramOverlay = undefined

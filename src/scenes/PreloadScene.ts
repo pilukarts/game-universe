@@ -10,7 +10,7 @@ export default class PreloadScene extends Phaser.Scene {
     // Try WebP first, fallback to PNG
     const useWebP = this.sys.game.device.browser.webp
     
-    if (useWebP && this.load.image) {
+    if (useWebP) {
       // Try to load WebP versions first
       this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.webp')
       this.load.image('particle_star', 'assets/particles/particle_star_512.webp')
