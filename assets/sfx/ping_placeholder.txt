@@ -1,0 +1,5 @@
+This is a placeholder for the ping sound effect used by the WinDisplay. Please replace with real audio files:
+- assets/sfx/ping.mp3 (recommended: 48–96 kbps MP3)
+- assets/sfx/ping.ogg (recommended for browser compatibility)
+
+Use a short metallic/digital 'ping' ~120–200 ms. Prefer normalized -6 to -3 dB.

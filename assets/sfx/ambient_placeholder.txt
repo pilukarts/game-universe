@@ -1,0 +1,5 @@
+Placeholder for ambient loop. Replace with real ambient loop files:
+- assets/sfx/ambient_loop.mp3
+- assets/sfx/ambient_loop.ogg
+
+Ambient should be subtle (10–20s loop) and low volume for UX.
