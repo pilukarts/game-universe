@@ -1,0 +1,35 @@
+import Phaser from 'phaser'
+
+export default class PreloadScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'PreloadScene' })
+  }
+
+  create() {
+    // Generate placeholder textures for symbols (replace with your assets later)
+    const colors = [0x60a86b, 0xd94b3b, 0x7b5fd1, 0x2fa6b4, 0xf0c75e, 0x9b9b9b]
+    for (let i = 0; i < colors.length; i++) {
+      const key = `symbol_${i}`
+      const g = this.make.graphics({ x: 0, y: 0, add: false })
+      g.fillStyle(0x222222, 1)
+      g.fillRoundedRect(0, 0, 128, 128, 16)
+      g.fillStyle(colors[i], 1)
+      g.fillCircle(64, 44, 34)
+      g.fillStyle(0xffffff, 1)
+      g.setTextStyle({ fontSize: '36px', fontFamily: 'Arial' })
+      const txt = String.fromCharCode(65 + i)
+      g.fillText(txt, 54, 84)
+      g.generateTexture(key, 128, 128)
+      g.destroy()
+    }
+
+    // gold frame for winning symbols
+    const g2 = this.make.graphics({ x: 0, y: 0, add: false })
+    g2.lineStyle(6, 0xffd166)
+    g2.strokeRoundedRect(3, 3, 122, 122, 14)
+    g2.generateTexture('gold_frame', 128, 128)
+    g2.destroy()
+
+    this.scene.start('GameScene')
+  }
+}
