@@ -3,3 +3,9 @@ This is a placeholder for the 'X' tile icon.
 Required resolution: 2048x2048
 Format: PNG (optimized with transparency)
 Replace this file with the actual 'X' tile graphic before production.
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="2048" viewBox="0 0 1024 1024">
+  <rect x="24" y="24" width="976" height="976" rx="48" fill="#3c0f4f" stroke="#4B0F6A" stroke-width="24"/>
+  <ellipse cx="512" cy="716" rx="400" ry="140" fill="#f2c13a"/>
+  <text x="50%" y="46%" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="420" fill="#FFD23F" stroke="#2a0b2f" stroke-width="12">X</text>
+</svg>

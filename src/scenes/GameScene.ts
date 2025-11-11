@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import WinDisplay from '../ui/WinDisplay'
+import { WinDisplay } from '../ui/WinDisplay'
 
 type Tile = {
   id: number
@@ -56,6 +57,9 @@ export default class GameScene extends Phaser.Scene {
 
     // Add demo scene button
     this.createDemoButton(900, 50)
+    // Create WinDisplay instance
+    this.winDisplay = new WinDisplay(this)
+    this.winDisplay.create(512, 400)
 
     this.generateBoardNoInitialMatches()
     this.renderBoard()
@@ -101,6 +105,8 @@ export default class GameScene extends Phaser.Scene {
 
   private startSpin() {
     this.resolving = true
+    // Hide win display when starting new spin
+    this.winDisplay?.hide()
     this.balance = Math.max(0, this.balance - this.bet)
     this.uiText?.setText(this.getStatusText())
     
@@ -166,6 +172,7 @@ export default class GameScene extends Phaser.Scene {
     let chain = 0
     let totalWin = 0
     
+    let totalWinAmount = 0
     while (true) {
       const matches = this.findAllMatches()
       if (matches.length === 0) break
@@ -179,6 +186,9 @@ export default class GameScene extends Phaser.Scene {
       const winAmount = this.calculateWin(matches, chain)
       totalWin += winAmount * this.multiplier
       this.balance += winAmount * this.multiplier
+      const winWithMultiplier = winAmount * this.multiplier
+      totalWinAmount += winWithMultiplier
+      this.balance += winWithMultiplier
       this.multiplier += 1
       this.uiText?.setText(this.getStatusText())
 
@@ -199,6 +209,11 @@ export default class GameScene extends Phaser.Scene {
     
     this.multiplier = 1
     this.uiText?.setText(this.getStatusText())
+    
+    // Show win display if there was any win
+    if (totalWinAmount > 0) {
+      this.winDisplay?.showWin(totalWinAmount)
+    }
   }
 
   private calculateWin(matches: { r: number; c: number }[], chain: number) {

@@ -3,3 +3,9 @@ This is a placeholder for the 'U' tile icon.
 Required resolution: 512x512
 Format: PNG (optimized with transparency)
 Replace this file with the actual 'U' tile graphic before production.
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect x="12" y="12" width="488" height="488" rx="28" fill="#3c0f4f" stroke="#4B0F6A" stroke-width="12"/>
+  <ellipse cx="256" cy="354" rx="200" ry="68" fill="#f2c13a"/>
+  <text x="50%" y="46%" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-weight="700" font-size="120" fill="#FFD23F" stroke="#2a0b2f" stroke-width="4">U</text>
+</svg>

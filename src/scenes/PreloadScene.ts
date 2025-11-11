@@ -28,6 +28,16 @@ export default class PreloadScene extends Phaser.Scene {
     // Ping audio (placeholder - replace with real mp3/ogg)
     // this.load.audio('ping', 'assets/sfx/ping.mp3')
     // For now, we'll handle missing audio gracefully in WinDisplay
+    // Load hologram overlay assets for WinDisplay
+    this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.webp')
+    this.load.image('scanline', 'assets/ui/scanline.svg')
+    
+    // Load particle assets
+    this.load.image('particle_star', 'assets/particles/particle_star_512.webp')
+    
+    // Note: Audio placeholders are currently .txt files
+    // When real audio files are added (mp3/ogg), uncomment this:
+    // this.load.audio('ping', ['assets/sfx/ping.mp3', 'assets/sfx/ping.ogg'])
   }
 
   create() {
