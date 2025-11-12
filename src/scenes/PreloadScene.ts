@@ -6,7 +6,7 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   preload() {
-    // Simple loader text (use this.add.text, not graphics text helpers)
+    // Loading text (use add.text because Graphics doesn't have text helpers)
     const loadingText = this.add.text(54, 84, 'Loading...', {
       fontSize: '36px',
       fontFamily: 'Arial, Helvetica, sans-serif',
@@ -40,7 +40,7 @@ export class PreloadScene extends Phaser.Scene {
       loadingText.destroy();
     });
 
-    // Preload assets (adjust paths to your assets folder)
+    // --- assets (ajusta rutas según tu proyecto) ---
     this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.png');
     this.load.image('scanline', 'assets/ui/scanline.png');
     this.load.image('particle_star', 'assets/particles/particle_star_512.png');
@@ -50,16 +50,14 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('tile_X_2048', 'assets/icons/tile_X_2048.png');
     this.load.image('tile_X_1024', 'assets/icons/tile_X_1024.png');
 
-    // Audio: load both mp3 and ogg as fallback
     this.load.audio('ping', ['assets/sfx/ping.mp3', 'assets/sfx/ping.ogg']);
     this.load.audio('ambient_loop', ['assets/sfx/ambient_loop.mp3', 'assets/sfx/ambient_loop.ogg']);
 
-    // Other optional assets used elsewhere
+    // otros recursos opcionales
     this.load.image('holo_scan', 'assets/ui/holo_scan.png');
   }
 
   create() {
-    // Start the main GameScene after preload finishes
     this.scene.start('GameScene');
   }
 }
