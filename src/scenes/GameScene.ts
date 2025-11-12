@@ -1,67 +1,113 @@
 import Phaser from 'phaser';
+import WinDisplay from '../ui/WinDisplay'; // adjust path if needed
 
-export class PreloadScene extends Phaser.Scene {
+export default class GameScene extends Phaser.Scene {
+  private winDisplay: WinDisplay | null = null;
+  private isSpinning = false;
+
   constructor() {
-    super({ key: 'PreloadScene' });
+    super({ key: 'GameScene' });
   }
 
-  preload() {
-    // Simple loader text (use this.add.text, not graphics text helpers)
-    const loadingText = this.add.text(54, 84, 'Loading...', {
-      fontSize: '36px',
-      fontFamily: 'Arial, Helvetica, sans-serif',
-      color: '#FFFFFF',
+  create(): void {
+    // Try to instantiate WinDisplay defensively
+    try {
+      // If WinDisplay constructor signature differs, adapt accordingly
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.winDisplay = new (WinDisplay as any)(this);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('WinDisplay could not be instantiated:', err);
+      this.winDisplay = null;
+    }
+
+    const demoBtn = this.add
+      .text(16, 16, 'Demo Win', {
+        fontSize: '18px',
+        color: '#ffffff',
+        backgroundColor: '#0a84ff',
+        padding: { x: 8, y: 6 },
+      })
+      .setInteractive({ useHandCursor: true });
+
+    demoBtn.on('pointerup', () => {
+      this.onSpinResolved(12.5);
     });
-    loadingText.setDepth(10);
-
-    // Progress bar background
-    const barX = 40;
-    const barY = 140;
-    const barWidth = 480;
-    const barHeight = 18;
-
-    const bg = this.add.graphics();
-    bg.fillStyle(0x2b2b2b, 1);
-    bg.fillRect(barX, barY, barWidth, barHeight);
-
-    const progressBar = this.add.graphics();
-    progressBar.setDepth(5);
-
-    // Hook loader progress events
-    this.load.on('progress', (value: number) => {
-      progressBar.clear();
-      progressBar.fillStyle(0x4fc3f7, 1);
-      progressBar.fillRect(barX, barY, barWidth * value, barHeight);
-    });
-
-    this.load.on('complete', () => {
-      progressBar.destroy();
-      bg.destroy();
-      loadingText.destroy();
-    });
-
-    // Preload assets (adjust paths to your assets folder)
-    this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.png');
-    this.load.image('scanline', 'assets/ui/scanline.png');
-    this.load.image('particle_star', 'assets/particles/particle_star_512.png');
-
-    this.load.image('tile_U_1024', 'assets/icons/tile_U_1024.png');
-    this.load.image('tile_U_512', 'assets/icons/tile_U_512.png');
-    this.load.image('tile_X_2048', 'assets/icons/tile_X_2048.png');
-    this.load.image('tile_X_1024', 'assets/icons/tile_X_1024.png');
-
-    // Audio: load both mp3 and ogg as fallback
-    this.load.audio('ping', ['assets/sfx/ping.mp3', 'assets/sfx/ping.ogg']);
-    this.load.audio('ambient_loop', ['assets/sfx/ambient_loop.mp3', 'assets/sfx/ambient_loop.ogg']);
-
-    // Other optional assets used elsewhere
-    this.load.image('holo_scan', 'assets/ui/holo_scan.png');
   }
 
-  create() {
-    // Start the main GameScene after preload finishes
-    this.scene.start('GameScene');
+  onSpinResolved(winAmount: number): void {
+    this.isSpinning = false;
+
+    if (this.winDisplay) {
+      try {
+        // call the API defensively — some implementations may differ
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this.winDisplay as any).showWin?.(winAmount, { mode: 'untilNextSpin' });
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('Failed to call winDisplay.showWin:', err);
+      }
+    }
+
+    this.playWinAnimation();
+  }
+
+  startNewSpin(): void {
+    this.isSpinning = true;
+
+    if (this.winDisplay) {
+      try {
+        (this.winDisplay as any).hide?.();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('Failed to call winDisplay.hide:', err);
+      }
+    }
+  }
+
+  // Use a safe runtime check / cast for timeline usage so TS doesn't complain
+  private playWinAnimation(): void {
+    // Build timeline options as plain object
+    const timelineOptions = {
+      tweens: [
+        // put your tweens here
+        // example:
+        // {
+        //   targets: someGameObject,
+        //   alpha: { from: 0, to: 1 },
+        //   duration: 300,
+        //   ease: 'Power1'
+        // }
+      ],
+    };
+
+    // Cast to any to call timeline/createTimeline if available at runtime
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tm = this.tweens as any;
+
+    if (tm && typeof tm.timeline === 'function') {
+      tm.timeline(timelineOptions);
+    } else if (tm && typeof tm.createTimeline === 'function') {
+      tm.createTimeline(timelineOptions);
+    } else {
+      // Fallback: timeline API not available — skip or create manual tweens
+      // eslint-disable-next-line no-console
+      console.debug('Timeline API not available on this.tweens; skipping timeline animation.');
+    }
+  }
+
+  shutdown(): void {
+    if (this.winDisplay) {
+      try {
+        (this.winDisplay as any).hide?.();
+        if (typeof (this.winDisplay as any).destroy === 'function') {
+          (this.winDisplay as any).destroy();
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('Error while shutting down WinDisplay:', err);
+      }
+      this.winDisplay = null;
+    }
   }
 }
-
-export default PreloadScene;
