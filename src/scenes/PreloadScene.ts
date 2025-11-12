@@ -6,7 +6,7 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   preload() {
-    // Background or simple loader text
+    // Simple loader text (use this.add.text, not graphics text helpers)
     const loadingText = this.add.text(54, 84, 'Loading...', {
       fontSize: '36px',
       fontFamily: 'Arial, Helvetica, sans-serif',
@@ -40,13 +40,11 @@ export class PreloadScene extends Phaser.Scene {
       loadingText.destroy();
     });
 
-    // Assets to preload (placeholders expected in branch)
-    // Images: try to keep path names same as branch
+    // Preload assets (adjust paths to your assets folder)
     this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.png');
     this.load.image('scanline', 'assets/ui/scanline.png');
     this.load.image('particle_star', 'assets/particles/particle_star_512.png');
 
-    // Icons (examples)
     this.load.image('tile_U_1024', 'assets/icons/tile_U_1024.png');
     this.load.image('tile_U_512', 'assets/icons/tile_U_512.png');
     this.load.image('tile_X_2048', 'assets/icons/tile_X_2048.png');
@@ -56,14 +54,12 @@ export class PreloadScene extends Phaser.Scene {
     this.load.audio('ping', ['assets/sfx/ping.mp3', 'assets/sfx/ping.ogg']);
     this.load.audio('ambient_loop', ['assets/sfx/ambient_loop.mp3', 'assets/sfx/ambient_loop.ogg']);
 
-    // Other assets that may be used by WinDisplay/demo
-    this.load.image('holo_scan', 'assets/ui/holo_scan.png'); // optional
-    // ... add other assets as necessary
+    // Other optional assets used elsewhere
+    this.load.image('holo_scan', 'assets/ui/holo_scan.png');
   }
 
   create() {
-    // After preload is complete, move to the GameScene (or WinDemoScene if you prefer)
-    // Prefer GameScene by default; adjust if you want demo
+    // Start the main GameScene after preload finishes
     this.scene.start('GameScene');
   }
 }
