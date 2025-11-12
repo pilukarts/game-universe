@@ -1,125 +1,67 @@
 import Phaser from 'phaser';
-import WinDisplay from '../ui/WinDisplay'; // assumes default export exists
 
-export default class GameScene extends Phaser.Scene {
-  private winDisplay: WinDisplay | null = null;
-  private isSpinning = false;
-
+export class PreloadScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'GameScene' });
+    super({ key: 'PreloadScene' });
   }
 
-  create(): void {
-    // Initialize game scene (background, reels, UI, etc).
-    // Minimal non-intrusive integration of WinDisplay:
-    try {
-      this.winDisplay = new WinDisplay(this);
-    } catch (err) {
-      // If WinDisplay is not present or fails, keep null but don't crash the scene.
-      // This keeps the integration non-invasive.
-      // eslint-disable-next-line no-console
-      console.warn('WinDisplay could not be instantiated:', err);
-      this.winDisplay = null;
-    }
+  preload() {
+    // Simple loader text (use this.add.text, not graphics text helpers)
+    const loadingText = this.add.text(54, 84, 'Loading...', {
+      fontSize: '36px',
+      fontFamily: 'Arial, Helvetica, sans-serif',
+      color: '#FFFFFF',
+    });
+    loadingText.setDepth(10);
 
-    // Example: wire up a demo button to simulate win for QA/dev
-    const demoBtn = this.add.text(16, 16, 'Demo Win', {
-      fontSize: '18px',
-      color: '#ffffff',
-      backgroundColor: '#0a84ff',
-      padding: { x: 8, y: 6 },
-    }).setInteractive({ useHandCursor: true });
+    // Progress bar background
+    const barX = 40;
+    const barY = 140;
+    const barWidth = 480;
+    const barHeight = 18;
 
-    demoBtn.on('pointerup', () => {
-      // Simulate a spin resolved with a win amount
-      this.onSpinResolved(12.5);
+    const bg = this.add.graphics();
+    bg.fillStyle(0x2b2b2b, 1);
+    bg.fillRect(barX, barY, barWidth, barHeight);
+
+    const progressBar = this.add.graphics();
+    progressBar.setDepth(5);
+
+    // Hook loader progress events
+    this.load.on('progress', (value: number) => {
+      progressBar.clear();
+      progressBar.fillStyle(0x4fc3f7, 1);
+      progressBar.fillRect(barX, barY, barWidth * value, barHeight);
     });
 
-    // Initialize other game systems here...
+    this.load.on('complete', () => {
+      progressBar.destroy();
+      bg.destroy();
+      loadingText.destroy();
+    });
+
+    // Preload assets (adjust paths to your assets folder)
+    this.load.image('hologram_overlay', 'assets/ui/hologram_overlay_2048.png');
+    this.load.image('scanline', 'assets/ui/scanline.png');
+    this.load.image('particle_star', 'assets/particles/particle_star_512.png');
+
+    this.load.image('tile_U_1024', 'assets/icons/tile_U_1024.png');
+    this.load.image('tile_U_512', 'assets/icons/tile_U_512.png');
+    this.load.image('tile_X_2048', 'assets/icons/tile_X_2048.png');
+    this.load.image('tile_X_1024', 'assets/icons/tile_X_1024.png');
+
+    // Audio: load both mp3 and ogg as fallback
+    this.load.audio('ping', ['assets/sfx/ping.mp3', 'assets/sfx/ping.ogg']);
+    this.load.audio('ambient_loop', ['assets/sfx/ambient_loop.mp3', 'assets/sfx/ambient_loop.ogg']);
+
+    // Other optional assets used elsewhere
+    this.load.image('holo_scan', 'assets/ui/holo_scan.png');
   }
 
-  // Example method: called when a spin resolves in your game logic
-  onSpinResolved(winAmount: number): void {
-    this.isSpinning = false;
-
-    // Show the WinDisplay safely if present
-    if (this.winDisplay) {
-      try {
-        // showWin signature may accept options depending on implementation
-        // We call with a common set of params: amount and mode
-        (this.winDisplay as any).showWin(winAmount, { mode: 'untilNextSpin' });
-      } catch (err) {
-        // log but don't crash
-        // eslint-disable-next-line no-console
-        console.warn('Failed to call winDisplay.showWin:', err);
-      }
-    }
-
-    // Example animation using tween timeline — use a cast to any to avoid TS typing issues
-    this.playWinAnimation(); // uses timeline/cast internally
-  }
-
-  // Example: called when starting a new spin
-  startNewSpin(): void {
-    this.isSpinning = true;
-
-    // Ensure WinDisplay is hidden before starting a new spin
-    if (this.winDisplay) {
-      try {
-        (this.winDisplay as any).hide();
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn('Failed to call winDisplay.hide:', err);
-      }
-    }
-
-    // Continue with spin start logic...
-  }
-
-  // Example of using the timeline safely with a cast to any
-  private playWinAnimation(): void {
-    // Build your timeline/tweens options here according to your game's needs
-    const timelineOptions = {
-      tweens: [
-        // Example tween: adapt targets to actual game objects in your scene
-        // {
-        //   targets: someGameObject,
-        //   alpha: { from: 0, to: 1 },
-        //   duration: 300,
-        //   ease: 'Power1',
-        // },
-      ],
-    };
-
-    // Cast tween manager to any to call timeline if available in runtime
-    const tweenManagerAny = this.tweens as any;
-
-    if (tweenManagerAny && typeof tweenManagerAny.timeline === 'function') {
-      tweenManagerAny.timeline(timelineOptions);
-    } else if (tweenManagerAny && typeof tweenManagerAny.createTimeline === 'function') {
-      tweenManagerAny.createTimeline(timelineOptions);
-    } else {
-      // Fallback: if timeline isn't available, add basic tweens manually,
-      // or simply log that timeline api is not available.
-      // eslint-disable-next-line no-console
-      console.debug('Timeline API not available on this.tweens; skipping timeline animation.');
-    }
-  }
-
-  // Optional cleanup on shutdown to avoid leaks
-  shutdown(): void {
-    // ensure winDisplay is destroyed/hidden
-    if (this.winDisplay) {
-      try {
-        (this.winDisplay as any).hide();
-        if (typeof (this.winDisplay as any).destroy === 'function') {
-          (this.winDisplay as any).destroy();
-        }
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn('Error while shutting down WinDisplay:', err);
-      }
-      this.winDisplay = null;
-    }
+  create() {
+    // Start the main GameScene after preload finishes
+    this.scene.start('GameScene');
   }
 }
+
+export default PreloadScene;
