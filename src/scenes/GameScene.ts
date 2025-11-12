@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import WinDisplay from '../ui/WinDisplay'; // adjust path if needed
+import WinDisplay from '../ui/WinDisplay'; // ajusta si la ruta es distinta
 
 export default class GameScene extends Phaser.Scene {
-  private winDisplay: WinDisplay | null = null;
+  private winDisplay: any = null;
   private isSpinning = false;
 
   constructor() {
@@ -10,14 +10,12 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    // Try to instantiate WinDisplay defensively
     try {
-      // If WinDisplay constructor signature differs, adapt accordingly
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // instanciar WinDisplay de forma defensiva (si existe)
       this.winDisplay = new (WinDisplay as any)(this);
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.warn('WinDisplay could not be instantiated:', err);
+      console.warn('WinDisplay not available or failed to init:', err);
       this.winDisplay = null;
     }
 
@@ -40,8 +38,6 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.winDisplay) {
       try {
-        // call the API defensively — some implementations may differ
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.winDisplay as any).showWin?.(winAmount, { mode: 'untilNextSpin' });
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -54,35 +50,24 @@ export default class GameScene extends Phaser.Scene {
 
   startNewSpin(): void {
     this.isSpinning = true;
-
     if (this.winDisplay) {
       try {
         (this.winDisplay as any).hide?.();
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.warn('Failed to call winDisplay.hide:', err);
+        console.warn('Failed to hide winDisplay:', err);
       }
     }
   }
 
-  // Use a safe runtime check / cast for timeline usage so TS doesn't complain
   private playWinAnimation(): void {
-    // Build timeline options as plain object
     const timelineOptions = {
       tweens: [
-        // put your tweens here
-        // example:
-        // {
-        //   targets: someGameObject,
-        //   alpha: { from: 0, to: 1 },
-        //   duration: 300,
-        //   ease: 'Power1'
-        // }
+        // Rellena con tweens reales si los necesitas
       ],
     };
 
-    // Cast to any to call timeline/createTimeline if available at runtime
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // cast a any y comprobación en tiempo de ejecución: evita el error TS2339
     const tm = this.tweens as any;
 
     if (tm && typeof tm.timeline === 'function') {
@@ -90,7 +75,7 @@ export default class GameScene extends Phaser.Scene {
     } else if (tm && typeof tm.createTimeline === 'function') {
       tm.createTimeline(timelineOptions);
     } else {
-      // Fallback: timeline API not available — skip or create manual tweens
+      // fallback: si no existe timeline, no hacemos nada o creamos tweens sueltos
       // eslint-disable-next-line no-console
       console.debug('Timeline API not available on this.tweens; skipping timeline animation.');
     }
